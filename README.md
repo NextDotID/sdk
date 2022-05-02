@@ -1,0 +1,46 @@
+# @nextdotid/sdk
+
+[![Publish][publish-badge]][publish-workflow]
+
+[publish-badge]: https://github.com/nextdotid/sdk/actions/workflows/publish.yml/badge.svg
+[publish-workflow]: https://github.com/nextdotid/sdk/actions/workflows/publish.yml
+
+[Next.ID](https://next.id) JavaScript SDK
+
+## Features
+
+- [Proof Client](https://github.com/nextdotid/sdk/tree/HEAD/src/proof)
+- [Key-Value Client](https://github.com/nextdotid/sdk/tree/HEAD/src/kv)
+
+## Installation
+
+- Stable channel:\
+  <https://npm.im/@nextdotid/sdk>
+- Unstable channel:\
+  <https://github.com/nextdotid/sdk/packages/1398276>
+
+```bash
+# Stable channel
+npm install @nextdotid/sdk@latest
+# Unstable channel
+npm install @nextdotid/sdk@latest --registry https://npm.next.id
+```
+
+## Usage
+
+```ts
+import { NextIDService } from '@nextdotid/sdk'
+
+const service = NextIDService.development()
+const platforms = await service.getAvaiabilePlatformList()
+const binder = service.createBinder({
+  platform: 'platform code',
+  identity: 'identity',
+  public_key: 'your public key',
+})
+const proof = await binder.bindProof('create')
+```
+
+## LICENSE
+
+[MIT](LICENSE)

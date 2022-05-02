@@ -1,0 +1,22 @@
+{
+  "name": "@nextdotid/sdk",
+  "version": "0.0.0",
+  "description": "Next.ID JavaScript SDK",
+  "license": "MIT",
+  "author": "NextDotID",
+  "main": "cjs/index.js",
+  "module": "esm/index.js",
+  "files": [
+    "src",
+    "esm",
+    "cjs"
+  ],
+  "scripts": {
+    "prepublishOnly": "rimraf esm cjs && tsc && tsc -p tsconfig.cjs.json",
+    "set-version": "npm --no-git-tag-version version \"$npm_package_version-$BUILD_VERSION\""
+  },
+  "devDependencies": {
+    "rimraf": "^3.0.2",
+    "typescript": "^4.7.0-dev.20220502"
+  }
+}
