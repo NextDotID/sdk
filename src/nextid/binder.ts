@@ -99,6 +99,10 @@ export class ProofBinder {
       public_key: this.publicKey,
     })
   }
+
+  get [Symbol.toStringTag]() {
+    return 'ProofBinder'
+  }
 }
 
 export interface CreateProofPayloadOptions<Extra> {

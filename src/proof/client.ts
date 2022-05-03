@@ -114,4 +114,8 @@ export class ProofClient {
     }
     return response.json()
   }
+
+  get [Symbol.toStringTag]() {
+    return 'ProofClient'
+  }
 }

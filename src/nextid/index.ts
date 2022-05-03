@@ -47,4 +47,8 @@ export class NextIDService {
       ...options,
     })
   }
+
+  get [Symbol.toStringTag]() {
+    return 'NextIDService'
+  }
 }

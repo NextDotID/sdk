@@ -41,4 +41,8 @@ export class KVClient {
     if (!response.ok) throw new KVError(response.statusText, response.status)
     return response.json()
   }
+
+  get [Symbol.toStringTag]() {
+    return 'KVClient'
+  }
 }
