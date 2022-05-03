@@ -1,6 +1,6 @@
 import { KVClient } from '../kv'
 import { ProofClient } from '../proof'
-import { Action, ProofChain, ProofExtra, ProofIdentity } from '../proof/types'
+import type { Action, ProofExtra } from '../proof/types'
 
 export interface ProofBinderOptions {
   platform: string
@@ -86,14 +86,6 @@ export class ProofBinder {
     })
   }
 
-  async allExistedBinding() {
-    const proofs: ProofIdentity[] = []
-    for await (const proof of this.iterExistedBinding()) {
-      proofs.push(proof)
-    }
-    return proofs
-  }
-
   queryBound() {
     return this.proofClient.queryBound({
       platform: this.platform,
@@ -113,14 +105,6 @@ export class ProofBinder {
     return this.proofClient.iterProofChain({
       public_key: this.publicKey,
     })
-  }
-
-  async allProofChain() {
-    const proofs: ProofChain[] = []
-    for await (const proof of this.iterProofChain()) {
-      proofs.push(proof)
-    }
-    return proofs
   }
 }
 
