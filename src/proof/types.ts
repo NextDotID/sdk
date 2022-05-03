@@ -43,7 +43,7 @@ export interface BindProofPayload extends QueryProofBound {
   readonly action: Action
 }
 
-export interface QueryProofPayloadResponse {
+export interface BindProofPayloadResponse {
   readonly post_content: unknown
   readonly sign_payload: string
   readonly uuid: string

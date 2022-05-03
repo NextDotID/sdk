@@ -9,7 +9,7 @@ import type {
   QueryProofChain,
   QueryProofChainResponse,
   BindProofPayload,
-  QueryProofPayloadResponse,
+  BindProofPayloadResponse,
   ProofExtra,
 } from './types'
 
@@ -36,7 +36,7 @@ export class ProofClient {
   }
 
   bindProof(options: BindProofPayload) {
-    return this.request<QueryProofPayloadResponse>('v1/proof/payload', {
+    return this.request<BindProofPayloadResponse>('v1/proof/payload', {
       method: 'POST',
       body: JSON.stringify(options),
     })

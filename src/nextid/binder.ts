@@ -1,6 +1,13 @@
 import { KVClient } from '../kv'
 import { ProofClient } from '../proof'
-import type { CreateProofPayload } from '../proof/types'
+
+export interface ProofBinderOptions {
+  proofClient: ProofClient
+  kvClient: KVClient
+  platform: string
+  identity: string
+  public_key: string
+}
 
 export class ProofBinder {
   private readonly proofClient: ProofClient
@@ -9,7 +16,7 @@ export class ProofBinder {
   private readonly identity: string
   private readonly publicKey: string
 
-  constructor(options: CreateProofPayload<unknown> & { proofClient: ProofClient; kvClient: KVClient }) {
+  constructor(options: ProofBinderOptions) {
     this.proofClient = options.proofClient
     this.kvClient = options.kvClient
     this.platform = options.platform
