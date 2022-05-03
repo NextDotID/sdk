@@ -24,7 +24,7 @@ export class NextIDService {
   static development(fetcher = fetch) {
     return new NextIDService({
       kvBaseURL: 'https://kv-service.nextnext.id',
-      proofBaseURL: 'https://proof-service.nextsnext.id',
+      proofBaseURL: 'https://proof-service.nextnext.id',
       fetch: fetcher,
     })
   }
