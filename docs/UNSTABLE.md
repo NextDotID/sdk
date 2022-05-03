@@ -18,7 +18,7 @@ Write into `.npmrc` on project root
 Add package:
 
 ```bash
-npm install @nextdotid/sdk
+npm install @nextdotid/sdk@latest
 ```
 
 ## Temporary Usage Method
