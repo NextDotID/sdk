@@ -8,13 +8,6 @@ export interface ProofBinderOptions {
   public_key: string
 }
 
-export interface CreateProofPayload {
-  readonly uuid: string
-  readonly created_at: string
-  readonly proof_location?: string
-  readonly extra?: ProofExtra
-}
-
 export class ProofBinder {
   private readonly proofClient: ProofClient
   private readonly kvClient: KVClient
@@ -52,7 +45,7 @@ export class ProofBinder {
     })
   }
 
-  createPersonaPayload(action: Action, options: CreateProofPayload) {
+  createPersonaPayload<Extra extends ProofExtra>(action: Action, options: CreateProofPayloadOptions<Extra>) {
     return this.proofClient.createPersonaPayload({
       platform: this.platform,
       identity: this.identity,
@@ -106,6 +99,13 @@ export class ProofBinder {
       public_key: this.publicKey,
     })
   }
+}
+
+export interface CreateProofPayloadOptions<Extra> {
+  readonly uuid: string
+  readonly created_at: string
+  readonly proof_location?: string
+  readonly extra?: Extra
 }
 
 export interface SetOptions<Patch> {
