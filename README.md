@@ -14,17 +14,11 @@
 
 ## Installation
 
-- Stable channel:\
-  <https://npm.im/@nextdotid/sdk>
-- Unstable channel:\
-  <https://github.com/nextdotid/sdk/packages/1398276>
-
 ```bash
-# Stable channel
 npm install @nextdotid/sdk@latest
-# Unstable channel
-npm install @nextdotid/sdk@latest --registry https://npm.next.id
 ```
+
+- [Unstable channel](https://github.com/nextdotid/sdk/tree/HEAD/docs/UNSTABLE.md)
 
 ## Usage
 
