@@ -10,6 +10,7 @@ import type {
   QueryProofChainResponse,
   BindProofPayload,
   QueryProofPayloadResponse,
+  ProofExtra,
 } from './types'
 
 export class ProofClient {
@@ -27,7 +28,7 @@ export class ProofClient {
     })
   }
 
-  createPersonaPayload(options: CreateProofPayload) {
+  createPersonaPayload<Extra = ProofExtra>(options: CreateProofPayload<Extra>) {
     return this.request<void>('v1/proof', {
       method: 'POST',
       body: JSON.stringify(options),

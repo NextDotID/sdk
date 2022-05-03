@@ -45,8 +45,8 @@ export class NextIDService {
     return this.proofClient.bindProof(options)
   }
 
-  async createBinder<Extra extends ProofExtra>(options: CreateProofPayload<Extra>) {
-    await this.proofClient.createPersonaPayload(options)
+  async createBinder<Extra = ProofExtra>(options: CreateProofPayload<Extra>) {
+    await this.proofClient.createPersonaPayload<Extra>(options)
     return new ProofBinder({
       proofClient: this.proofClient,
       kvClient: this.kvClient,

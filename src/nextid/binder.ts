@@ -9,7 +9,7 @@ export class ProofBinder {
   private readonly identity: string
   private readonly publicKey: string
 
-  constructor(options: CreateProofPayload & { proofClient: ProofClient; kvClient: KVClient }) {
+  constructor(options: CreateProofPayload<unknown> & { proofClient: ProofClient; kvClient: KVClient }) {
     this.proofClient = options.proofClient
     this.kvClient = options.kvClient
     this.platform = options.platform
