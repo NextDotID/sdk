@@ -31,14 +31,18 @@ npm install @nextdotid/sdk@latest --registry https://npm.next.id
 ```ts
 import { NextIDService } from '@nextdotid/sdk'
 
-const service = NextIDService.development()
+// preset `production` and `development` named constructor
+const service = NextIDService.development() // = NextIDService.production()
+// get available platform list
 const platforms = await service.getAvaiabilePlatformList()
+// key-value service
+const { proofs } = await binder.get() // get all proofs
+// get a binder instance, the binder pre-fill `platform`, `identity` and `public_key` on api call
 const binder = service.createBinder({
   platform: 'platform code',
   identity: 'identity',
   public_key: 'your public key',
 })
-const proof = await binder.bindProof('create')
 ```
 
 ## LICENSE
