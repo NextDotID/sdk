@@ -25,7 +25,7 @@ export class KVClient {
   }
 
   set<Patch>(options: SetOptions<Patch>) {
-    return this.request('v1/kv', {
+    return this.request<void>('v1/kv', {
       method: 'POST',
       body: JSON.stringify(options),
     })

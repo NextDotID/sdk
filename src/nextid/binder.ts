@@ -1,12 +1,6 @@
 import { KVClient } from '../kv'
 import { ProofClient } from '../proof'
-import type { Action, ProofExtra } from '../proof/types'
-
-export interface ProofBinderOptions {
-  platform: string
-  identity: string
-  public_key: string
-}
+import type { CreateProofPayload } from '../proof/types'
 
 export class ProofBinder {
   private readonly proofClient: ProofClient
@@ -15,7 +9,7 @@ export class ProofBinder {
   private readonly identity: string
   private readonly publicKey: string
 
-  constructor(options: ProofBinderOptions & { proofClient: ProofClient; kvClient: KVClient }) {
+  constructor(options: CreateProofPayload & { proofClient: ProofClient; kvClient: KVClient }) {
     this.proofClient = options.proofClient
     this.kvClient = options.kvClient
     this.platform = options.platform
@@ -42,25 +36,6 @@ export class ProofBinder {
       identity: this.identity,
       persona: this.publicKey,
       ...options,
-    })
-  }
-
-  createPersonaPayload<Extra extends ProofExtra>(action: Action, options: CreateProofPayloadOptions<Extra>) {
-    return this.proofClient.createPersonaPayload({
-      platform: this.platform,
-      identity: this.identity,
-      public_key: this.publicKey,
-      action,
-      ...options,
-    })
-  }
-
-  bindProof(action: Action) {
-    return this.proofClient.bindProof({
-      platform: this.platform,
-      identity: this.identity,
-      public_key: this.publicKey,
-      action,
     })
   }
 
@@ -103,13 +78,6 @@ export class ProofBinder {
   get [Symbol.toStringTag]() {
     return 'ProofBinder'
   }
-}
-
-export interface CreateProofPayloadOptions<Extra> {
-  readonly uuid: string
-  readonly created_at: string
-  readonly proof_location?: string
-  readonly extra?: Extra
 }
 
 export interface SetOptions<Patch> {

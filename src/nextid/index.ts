@@ -1,7 +1,8 @@
 import { KVClient } from '../kv'
 import { ProofClient } from '../proof'
-import { ProofBinder, ProofBinderOptions } from './binder'
-export { ProofBinder, type ProofBinderOptions }
+import { BindProofPayload, CreateProofPayload, ProofExtra } from '../proof/types'
+import { ProofBinder } from './binder'
+export { ProofBinder }
 
 export interface NextIDServiceOptions {
   proofBaseURL: string | URL
@@ -40,7 +41,12 @@ export class NextIDService {
     return platforms
   }
 
-  createBinder(options: ProofBinderOptions) {
+  async bindProof(options: BindProofPayload) {
+    return this.proofClient.bindProof(options)
+  }
+
+  async createBinder<Extra extends ProofExtra>(options: CreateProofPayload<Extra>) {
+    await this.proofClient.createPersonaPayload(options)
     return new ProofBinder({
       proofClient: this.proofClient,
       kvClient: this.kvClient,

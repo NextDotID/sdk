@@ -5,13 +5,13 @@ export interface HealthResposne {
   readonly platforms: readonly string[]
 }
 
-export interface CreateProofPayload {
+export interface CreateProofPayload<Extra extends ProofExtra = ProofExtra> {
   readonly action: Action
   readonly platform: string
   readonly identity: string
   readonly public_key: string
   readonly proof_location?: string
-  readonly extra?: ProofExtra
+  readonly extra?: Extra
   readonly uuid: string
   readonly created_at: string
 }

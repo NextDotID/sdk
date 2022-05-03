@@ -28,7 +28,7 @@ export class ProofClient {
   }
 
   createPersonaPayload(options: CreateProofPayload) {
-    return this.request('v1/proof', {
+    return this.request<void>('v1/proof', {
       method: 'POST',
       body: JSON.stringify(options),
     })
