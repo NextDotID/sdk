@@ -1,4 +1,6 @@
-# proof service
+# Proof Client
+
+The Proof Client is low-level API
 
 ## Links
 

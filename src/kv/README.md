@@ -1,4 +1,6 @@
-# kv service
+# Key-Value Client
+
+The Key-Value Client is low-level API
 
 ## Links
 
