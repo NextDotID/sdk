@@ -98,7 +98,7 @@ export class ProofClient {
     }
   }
 
-  protected async request<T>(pathname: string, init?: RequestInit & { searchParams?: object }): Promise<T> {
+  protected async request<T>(pathname: string, init?: RequestInit & { searchParams?: object }) {
     const headers = new Headers(init?.headers ?? {})
     headers.set('accept-type', 'application/json')
     headers.set('content-type', 'application/json')
@@ -109,10 +109,13 @@ export class ProofClient {
     })
     const response = await this.fetch(url.toString(), { ...init, headers })
     if (!response.ok) {
-      const payload: { message: string } = await response.json()
+      interface ErrorResponse {
+        message: string
+      }
+      const payload = (await response.json()) as ErrorResponse
       throw new ProofError(payload.message, response.status)
     }
-    return response.json()
+    return response.json() as Promise<T>
   }
 
   get [Symbol.toStringTag]() {

@@ -31,15 +31,15 @@ export class KVClient {
     })
   }
 
-  protected async request<T>(pathname: string, init?: RequestInit & { searchParams?: object }): Promise<T> {
+  protected async request<T>(pathname: string, init?: RequestInit & { searchParams?: object }) {
     const url = new URL(pathname, this.baseURL)
     Object.entries(init?.searchParams ?? {}).forEach(([key, value]) => {
       if (value === undefined || value === null) return
-      url.searchParams.set(key, value)
+      url.searchParams.set(key, String(value))
     })
     const response = await this.fetch(url.toString(), init)
     if (!response.ok) throw new KVError(response.statusText, response.status)
-    return response.json()
+    return response.json() as Promise<T>
   }
 
   get [Symbol.toStringTag]() {
