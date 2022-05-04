@@ -38,7 +38,7 @@ export class KVClient {
       url.searchParams.set(key, String(value))
     })
     const response = await this.fetch(url.toString(), init)
-    if (!response.ok) throw new KVError(response.statusText, response.status)
+    if (!response.ok) throw new KVError(await response.text(), response.status)
     return response.json() as Promise<T>
   }
 
