@@ -10,13 +10,23 @@ export class KVClient {
     this.fetch = fetcher
   }
 
+  /**
+   * Get current KV of a persona
+   * @param persona Persona pubilc key (hexstring started with `0x`)
+   * @link https://github.com/nextdotid/kv_server/blob/cb109b/docs/api.apib#L27
+   */
   get(persona: string): Promise<GetResposne> {
+    if (!persona.startsWith('0x')) return Promise.reject(new KVError('started with `0x`'))
     return this.request('v1/kv', {
       method: 'GET',
       searchParams: { persona },
     })
   }
 
+  /**
+   * Get signature payload for updating
+   * @link https://github.com/nextdotid/kv_server/blob/cb109b/docs/api.apib#L74
+   */
   getPayload<Patch>(options: QueryPayload<Patch>): Promise<QueryPayloadResponse> {
     return this.request('v1/kv/payload', {
       method: 'POST',
@@ -24,6 +34,10 @@ export class KVClient {
     })
   }
 
+  /**
+   * Update a full set of key-value pairs
+   * @link https://github.com/nextdotid/kv_server/blob/cb109b/docs/api.apib#L121
+   */
   set<Patch>(options: SetOptions<Patch>) {
     return this.request<void>('v1/kv', {
       method: 'POST',

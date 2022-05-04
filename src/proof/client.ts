@@ -21,12 +21,20 @@ export class ProofClient {
     this.fetch = fetcher
   }
 
+  /**
+   * General info
+   * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L37
+   */
   health() {
     return this.request<HealthResposne>('healthz', {
       method: 'GET',
     })
   }
 
+  /**
+   * Create a proof modification
+   * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L106
+   */
   createPersonaPayload<Extra>(options: CreateProofPayload<Extra>) {
     return this.request<void>('v1/proof', {
       method: 'POST',
@@ -34,6 +42,10 @@ export class ProofClient {
     })
   }
 
+  /**
+   * Query a proof payload to signature and to post
+   * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L62
+   */
   bindProof(options: BindProofPayload) {
     return this.request<BindProofPayloadResponse>('v1/proof/payload', {
       method: 'POST',
@@ -41,6 +53,10 @@ export class ProofClient {
     })
   }
 
+  /**
+   * Query an existed binding
+   * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L154
+   */
   queryExistedBinding(options: QueryExistedBinding) {
     return this.request<QueryExistedBindingResponse>('v1/proof', {
       method: 'GET',
@@ -52,16 +68,21 @@ export class ProofClient {
     })
   }
 
+  /** Iterable Existed Binding */
   async *iterExistedBinding(options: Omit<QueryExistedBinding, 'page'>) {
     let page = 1
     while (true) {
       const { pagination, ids } = await this.queryExistedBinding({ ...options, page })
       yield* ids
-      if (pagination.next === pagination.current) break
+      if (pagination.next === 0) break
       page = pagination.next
     }
   }
 
+  /**
+   * Check if a proof exists
+   * @link https://github.com/nextdotid/proof-server/blob/HEAD/docs/api.apib#L154
+   */
   async queryBound(options: QueryProofBound): Promise<Proof> {
     const proof = await this.request<Proof>('v1/proof/exists', {
       method: 'GET',
@@ -78,8 +99,12 @@ export class ProofClient {
     }
   }
 
-  queryProofChain(options: QueryProofChain) {
-    return this.request<QueryProofChainResponse>('v1/proofchain', {
+  /**
+   * Get the proof chain items
+   * @link https://github.com/nextdotid/proof-server/blob/HEAD/docs/api.apib#L270
+   */
+  queryProofChain<Extra>(options: QueryProofChain) {
+    return this.request<QueryProofChainResponse<Extra>>('v1/proofchain', {
       method: 'GET',
       searchParams: {
         public_key: options.public_key,
@@ -88,12 +113,13 @@ export class ProofClient {
     })
   }
 
+  /** Iterable Proof Chain */
   async *iterProofChain(options: Omit<QueryProofChain, 'page'>) {
     let page = 1
     while (true) {
       const { pagination, proof_chain } = await this.queryProofChain({ ...options, page })
       yield* proof_chain
-      if (pagination.next === pagination.current) break
+      if (pagination.next === 0) break
       page = pagination.next
     }
   }
