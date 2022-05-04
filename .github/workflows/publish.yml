@@ -18,5 +18,6 @@ jobs:
         with:
           registry: true
       - run: npm ci
+      - run: npm run lint
       - run: npm run set-version
       - run: npm publish
