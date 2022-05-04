@@ -5,7 +5,7 @@ export interface HealthResposne {
   readonly platforms: readonly string[]
 }
 
-export interface CreateProofPayload<Extra = ProofExtra> {
+export interface CreateProofPayload<Extra> {
   readonly action: Action
   readonly platform: string
   readonly identity: string

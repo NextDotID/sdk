@@ -1,5 +1,7 @@
 import { ProofError } from './errors'
 import type {
+  BindProofPayload,
+  BindProofPayloadResponse,
   CreateProofPayload,
   HealthResposne,
   Proof,
@@ -8,9 +10,6 @@ import type {
   QueryProofBound,
   QueryProofChain,
   QueryProofChainResponse,
-  BindProofPayload,
-  BindProofPayloadResponse,
-  ProofExtra,
 } from './types'
 
 export class ProofClient {
@@ -28,7 +27,7 @@ export class ProofClient {
     })
   }
 
-  createPersonaPayload<Extra = ProofExtra>(options: CreateProofPayload<Extra>) {
+  createPersonaPayload<Extra>(options: CreateProofPayload<Extra>) {
     return this.request<void>('v1/proof', {
       method: 'POST',
       body: JSON.stringify(options),

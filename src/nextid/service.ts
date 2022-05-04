@@ -15,16 +15,16 @@ export class NextIDService {
 
   static production(fetcher = fetch) {
     return new NextIDService({
-      kvBaseURL: 'https://kv-service.next.id',
       proofBaseURL: 'https://proof-service.next.id',
+      kvBaseURL: 'https://kv-service.next.id',
       fetch: fetcher,
     })
   }
 
   static development(fetcher = fetch) {
     return new NextIDService({
-      kvBaseURL: 'https://kv-service.nextnext.id',
       proofBaseURL: 'https://proof-service.nextnext.id',
+      kvBaseURL: 'https://kv-service.nextnext.id',
       fetch: fetcher,
     })
   }
@@ -35,9 +35,9 @@ export class NextIDService {
     this.kvClient = new KVClient(options.kvBaseURL, fetcher)
   }
 
-  async getAvaiabilePlatformList(): Promise<readonly string[]> {
+  async getAvaiabilePlatformList() {
     const { platforms } = await this.proofClient.health()
-    return platforms
+    return Object.freeze(platforms)
   }
 
   async bindProof(options: BindProofPayload) {
