@@ -81,7 +81,7 @@ export class ProofClient {
 
   /**
    * Check if a proof exists
-   * @link https://github.com/nextdotid/proof-server/blob/HEAD/docs/api.apib#L154
+   * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L154
    */
   async queryBound(options: QueryProofBound): Promise<Proof> {
     const proof = await this.request<Proof>('v1/proof/exists', {
@@ -101,7 +101,7 @@ export class ProofClient {
 
   /**
    * Get the proof chain items
-   * @link https://github.com/nextdotid/proof-server/blob/HEAD/docs/api.apib#L270
+   * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L270
    */
   queryProofChain<Extra>(options: QueryProofChain) {
     return this.request<QueryProofChainResponse<Extra>>('v1/proofchain', {

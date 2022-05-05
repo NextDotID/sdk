@@ -9,8 +9,8 @@
 
 ## Features
 
-- [Proof Client](https://github.com/nextdotid/sdk/tree/HEAD/src/proof)
-- [Key-Value Client](https://github.com/nextdotid/sdk/tree/HEAD/src/kv)
+- [Proof Client](src/proof)
+- [Key-Value Client](src/kv)
 
 ## Installation
 
@@ -18,7 +18,7 @@
 npm install @nextdotid/sdk@latest
 ```
 
-- [Unstable channel](https://github.com/nextdotid/sdk/tree/HEAD/docs/UNSTABLE.md)
+- [Unstable channel](docs/UNSTABLE.md)
 
 ## Usage
 
