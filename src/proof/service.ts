@@ -40,6 +40,16 @@ export class ProofService<Extra = EthereumProofExtra> {
     })
   }
 
+  async deleteProof(options: SignatureOptions<Extra>) {
+    const proof = await this.bindProof('delete')
+    return this.createProofModification({
+      action: 'delete',
+      uuid: proof.uuid,
+      created_at: proof.created_at,
+      extra: await options.onSignature(proof.sign_payload),
+    })
+  }
+
   queryBound() {
     return this.client.queryBound({
       platform: this.platform,
@@ -72,6 +82,10 @@ export class ProofService<Extra = EthereumProofExtra> {
     return toArray(this.iterProofChain())
   }
   // #endregion
+}
+
+interface SignatureOptions<Extra> {
+  onSignature(payload: string): Extra | Promise<Extra>
 }
 
 async function toArray<T>(iterate: AsyncGenerator<T>): Promise<readonly T[]> {
