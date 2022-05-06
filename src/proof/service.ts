@@ -1,29 +1,12 @@
 import { ProofClient } from './client'
-import { Action, BaseInfo, CreateProofModification, EthereumProofExtra } from './types'
-
-export interface ProofServiceOptions<Platform extends string> extends BaseInfo {
-  readonly platform: Platform
-  readonly client: ProofClient
-}
-
-export interface PlatformMap {
-  nextid: never
-  github: 'default'
-  keybase: 'default'
-  twitter: 'default' | 'en_US' | 'zh_CN'
-  ethereum: never
-}
-
-export interface CreateProofVerification<BCP47Code extends string> {
-  readonly post_content: BCP47Code extends string ? Readonly<Record<BCP47Code, string>> : never
-  verify(location: BCP47Code extends string ? string : never): Promise<void>
-}
-
-export interface ExtraOptions<T> {
-  onExtra(payload: string): T | Promise<T>
-}
-
-export type ExtraSpecificOptions<Platform> = Platform extends 'ethereum' ? ExtraOptions<EthereumProofExtra> : void
+import type {
+  CreateProofModificationType,
+  CreateProofVerification,
+  ExtraSpecificOptions,
+  PlatformMap,
+  ProofServiceOptions,
+} from './service.types'
+import type { Action } from './types'
 
 export class ProofService<Platform extends keyof PlatformMap> {
   readonly client: ProofClient
@@ -51,15 +34,7 @@ export class ProofService<Platform extends keyof PlatformMap> {
     })
   }
 
-  createProofModification(
-    options: Omit<
-      CreateProofModification<
-        PlatformMap[Platform] extends string ? string : never,
-        Platform extends 'ethereum' ? EthereumProofExtra : never
-      >,
-      keyof BaseInfo
-    >,
-  ) {
+  createProofModification(options: CreateProofModificationType<Platform>) {
     return this.client.createProofModification({
       action: options.action,
       uuid: options.uuid,
@@ -72,14 +47,14 @@ export class ProofService<Platform extends keyof PlatformMap> {
     })
   }
 
-  async createProof(options: ExtraSpecificOptions<Platform>): Promise<CreateProofVerification<PlatformMap[Platform]>> {
+  async createProof(options: ExtraSpecificOptions<Platform>) {
     const proof = await this.client.bindProof<PlatformMap[Platform]>({
       action: 'create',
       platform: this.platform,
       identity: this.identity,
       public_key: this.publicKey,
     })
-    return {
+    const verification: CreateProofVerification<PlatformMap[Platform]> = {
       post_content: proof.post_content,
       verify: async (proof_location?: string) => {
         return this.client.createProofModification({
@@ -94,6 +69,7 @@ export class ProofService<Platform extends keyof PlatformMap> {
         })
       },
     }
+    return verification
   }
 
   async deleteProof(options: ExtraSpecificOptions<Platform>) {

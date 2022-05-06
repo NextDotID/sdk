@@ -33,13 +33,6 @@ export interface CreateProofModification<Location, Extra> extends BindProofPaylo
   readonly extra: Extra
 }
 
-export interface EthereumProofExtra {
-  /** Signature signed by ETH wallet (w/ same sign payload), Base64Encoded */
-  readonly wallet_signature: string
-  /** Signature signed by Persona private key (w/ same sign payload), Base64Encoded */
-  readonly signature: string
-}
-
 export interface QueryExistedBinding {
   /** Proof platform. If not given, all platforms will be searched */
   readonly platform?: string
