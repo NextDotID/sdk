@@ -28,9 +28,9 @@ export interface CreateProofModification<Location, Extra> extends BindProofPaylo
   /**  Creation time of this chain link (UNIX timestamp, unit: second) */
   readonly created_at: string
   /** Location where public-accessable proof post is set */
-  readonly proof_location?: Location
+  readonly proof_location: Location
   /** Extra info for specific platform needed */
-  readonly extra?: Extra
+  readonly extra: Extra
 }
 
 export interface EthereumProofExtra {
@@ -74,7 +74,7 @@ export interface BindProofPayloadResponse<BCP47Code extends string> {
    * Language code follows BCP-47 standard (i.e. https://www.rfc-editor.org/info/bcp47).
    * Note: there is always a `default` content.
    */
-  readonly post_content: BCP47Code extends string ? Record<BCP47Code, string> : never
+  readonly post_content: BCP47Code extends string ? Readonly<Record<BCP47Code, string>> : never
   /** Needed signing payload */
   readonly sign_payload: string
 }

@@ -51,7 +51,15 @@ export class ProofService<Platform extends keyof PlatformMap> {
     })
   }
 
-  createProofModification<Locaction, Extra>(options: Omit<CreateProofModification<Locaction, Extra>, keyof BaseInfo>) {
+  createProofModification(
+    options: Omit<
+      CreateProofModification<
+        PlatformMap[Platform] extends string ? string : never,
+        Platform extends 'ethereum' ? EthereumProofExtra : never
+      >,
+      keyof BaseInfo
+    >,
+  ) {
     return this.client.createProofModification({
       action: options.action,
       uuid: options.uuid,
@@ -65,14 +73,22 @@ export class ProofService<Platform extends keyof PlatformMap> {
   }
 
   async createProof(options: ExtraSpecificOptions<Platform>): Promise<CreateProofVerification<PlatformMap[Platform]>> {
-    const proof = await this.bindProof('create')
+    const proof = await this.client.bindProof<PlatformMap[Platform]>({
+      action: 'create',
+      platform: this.platform,
+      identity: this.identity,
+      public_key: this.publicKey,
+    })
     return {
       post_content: proof.post_content,
       verify: async (proof_location?: string) => {
-        return this.createProofModification({
+        return this.client.createProofModification({
           action: 'create',
           uuid: proof.uuid,
           created_at: proof.created_at,
+          platform: this.platform,
+          identity: this.identity,
+          public_key: this.publicKey,
           proof_location,
           extra: await options?.onExtra(proof.sign_payload),
         })
@@ -81,11 +97,20 @@ export class ProofService<Platform extends keyof PlatformMap> {
   }
 
   async deleteProof(options: ExtraSpecificOptions<Platform>) {
-    const proof = await this.bindProof('delete')
-    return this.createProofModification({
+    const proof = await this.client.bindProof({
+      action: 'delete',
+      platform: this.platform,
+      identity: this.identity,
+      public_key: this.publicKey,
+    })
+    return this.client.createProofModification({
       action: 'delete',
       uuid: proof.uuid,
       created_at: proof.created_at,
+      platform: this.platform,
+      identity: this.identity,
+      public_key: this.publicKey,
+      proof_location: undefined as never,
       extra: await options?.onExtra(proof.sign_payload),
     })
   }
