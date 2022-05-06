@@ -76,7 +76,7 @@ export class ProofClient {
     })
   }
 
-  /** Iterable Existed Binding */
+  /** Iterator Existed Binding */
   async *iterExistedBinding(options: Omit<QueryExistedBinding, 'page'>) {
     let page = 1
     while (true) {
@@ -89,10 +89,10 @@ export class ProofClient {
 
   /**
    * Check if a proof exists
-   * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L154
+   * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L228
    */
   async queryBound(options: QueryProofBound): Promise<Proof> {
-    const proof = await this.request<Proof>('v1/proof/exists', {
+    return this.request<Proof>('v1/proof/exists', {
       method: 'GET',
       searchParams: {
         identity: options.identity,
@@ -100,11 +100,6 @@ export class ProofClient {
         public_key: options.public_key,
       },
     })
-    return {
-      ...proof,
-      identity: options.identity,
-      platform: options.platform,
-    }
   }
 
   /**
@@ -121,7 +116,7 @@ export class ProofClient {
     })
   }
 
-  /** Iterable Proof Chain */
+  /** Iterator Proof Chain */
   async *iterProofChain(options: Omit<QueryProofChain, 'page'>) {
     let page = 1
     while (true) {
@@ -142,17 +137,11 @@ export class ProofClient {
       url.searchParams.set(key, String(value))
     })
     const response = await this.fetch(url.toString(), { ...init, headers })
-    if (!response.ok) {
-      interface ErrorResponse {
-        message: string
-      }
-      const payload = (await response.json()) as ErrorResponse
-      throw new ProofError(payload.message, response.status)
+    if (response.ok) return response.json() as Promise<T>
+    interface ErrorResponse {
+      message: string
     }
-    return response.json() as Promise<T>
-  }
-
-  get [Symbol.toStringTag]() {
-    return 'ProofClient'
+    const payload = (await response.json()) as ErrorResponse
+    throw new ProofError(payload.message, response.status)
   }
 }
