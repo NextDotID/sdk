@@ -22,13 +22,13 @@ export interface HealthResposne<Platform extends string> {
   readonly platforms: readonly Platform[]
 }
 
-export interface CreateProofModification<Extra> extends BindProofPayload {
+export interface CreateProofModification<Location, Extra> extends BindProofPayload {
   /** UUID of this chain link */
   readonly uuid: string
   /**  Creation time of this chain link (UNIX timestamp, unit: second) */
   readonly created_at: string
   /** Location where public-accessable proof post is set */
-  readonly proof_location?: string
+  readonly proof_location?: Location
   /** Extra info for specific platform needed */
   readonly extra?: Extra
 }

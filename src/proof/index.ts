@@ -5,6 +5,6 @@ export {
   ProofService,
   type ProofServiceOptions,
   type PlatformMap,
-  type EthereumProofExtraOptions as ExtraOptions,
+  type ExtraSpecificOptions as ExtraOptions,
 } from './service'
 export type { ProofClientTypes }

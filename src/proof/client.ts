@@ -43,7 +43,7 @@ export class ProofClient {
    * Create a proof modification
    * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L106
    */
-  createProofModification<Extra>(options: CreateProofModification<Extra>) {
+  createProofModification<Location, Extra>(options: CreateProofModification<Location, Extra>) {
     return this.request<void>('v1/proof', {
       method: 'POST',
       body: JSON.stringify(options),

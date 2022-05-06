@@ -15,13 +15,15 @@ export interface PlatformMap {
 }
 
 export interface CreateProofVerification<BCP47Code extends string> {
-  post_content: BCP47Code extends string ? Record<BCP47Code, string> : never
+  readonly post_content: BCP47Code extends string ? Readonly<Record<BCP47Code, string>> : never
   verify(location: BCP47Code extends string ? string : never): Promise<void>
 }
 
-export interface EthereumProofExtraOptions {
-  onExtra(payload: string): EthereumProofExtra | Promise<EthereumProofExtra>
+export interface ExtraOptions<T> {
+  onExtra(payload: string): T | Promise<T>
 }
+
+export type ExtraSpecificOptions<Platform> = Platform extends 'ethereum' ? ExtraOptions<EthereumProofExtra> : void
 
 export class ProofService<Platform extends keyof PlatformMap> {
   readonly client: ProofClient
@@ -49,22 +51,20 @@ export class ProofService<Platform extends keyof PlatformMap> {
     })
   }
 
-  createProofModification<Extra>(options: Omit<CreateProofModification<Extra>, keyof BaseInfo>) {
+  createProofModification<Locaction, Extra>(options: Omit<CreateProofModification<Locaction, Extra>, keyof BaseInfo>) {
     return this.client.createProofModification({
+      action: options.action,
+      uuid: options.uuid,
+      created_at: options.created_at,
       platform: this.platform,
       identity: this.identity,
       public_key: this.publicKey,
-      action: options.action,
-      created_at: options.created_at,
-      uuid: options.uuid,
-      extra: options.extra,
       proof_location: options.proof_location,
+      extra: options.extra,
     })
   }
 
-  async createProof(
-    options: Platform extends 'ethereum' ? EthereumProofExtraOptions : void,
-  ): Promise<CreateProofVerification<PlatformMap[Platform]>> {
+  async createProof(options: ExtraSpecificOptions<Platform>): Promise<CreateProofVerification<PlatformMap[Platform]>> {
     const proof = await this.bindProof('create')
     return {
       post_content: proof.post_content,
@@ -80,7 +80,7 @@ export class ProofService<Platform extends keyof PlatformMap> {
     }
   }
 
-  async deleteProof(options: Platform extends 'ethereum' ? EthereumProofExtraOptions : void) {
+  async deleteProof(options: ExtraSpecificOptions<Platform>) {
     const proof = await this.bindProof('delete')
     return this.createProofModification({
       action: 'delete',
