@@ -15,7 +15,7 @@ export interface PlatformMap {
 }
 
 export interface CreateProofVerification<BCP47Code extends string> {
-  post_content: Record<BCP47Code, string>
+  post_content: BCP47Code extends string ? Record<BCP47Code, string> : never
   verify(location: string): Promise<void>
 }
 
@@ -25,15 +25,15 @@ export interface EthereumProofExtraOptions {
 
 export class ProofService<Platform extends keyof PlatformMap> {
   readonly client: ProofClient
-  readonly platform: string
+  readonly platform: Platform
   readonly identity: string
-  readonly public_key: string
+  readonly publicKey: string
 
   constructor(options: ProofServiceOptions<Platform>) {
     this.client = options.client
     this.platform = options.platform
     this.identity = options.identity
-    this.public_key = options.public_key
+    this.publicKey = options.public_key
   }
 
   health<Platform extends string = keyof PlatformMap>() {
@@ -44,7 +44,7 @@ export class ProofService<Platform extends keyof PlatformMap> {
     return this.client.bindProof<PlatformMap[Platform]>({
       platform: this.platform,
       identity: this.identity,
-      public_key: this.public_key,
+      public_key: this.publicKey,
       action,
     })
   }
@@ -53,7 +53,7 @@ export class ProofService<Platform extends keyof PlatformMap> {
     return this.client.createProofModification({
       platform: this.platform,
       identity: this.identity,
-      public_key: this.public_key,
+      public_key: this.publicKey,
       action: options.action,
       created_at: options.created_at,
       uuid: options.uuid,
@@ -94,7 +94,7 @@ export class ProofService<Platform extends keyof PlatformMap> {
     return this.client.queryBound({
       platform: this.platform,
       identity: this.identity,
-      public_key: this.public_key,
+      public_key: this.publicKey,
     })
   }
 
@@ -114,7 +114,7 @@ export class ProofService<Platform extends keyof PlatformMap> {
   // #region proof chain
   iterProofChain() {
     return this.client.iterProofChain({
-      public_key: this.public_key,
+      public_key: this.publicKey,
     })
   }
 

@@ -38,7 +38,6 @@ export interface EthereumProofExtra {
   readonly wallet_signature: string
   /** Signature signed by Persona private key (w/ same sign payload), Base64Encoded */
   readonly signature: string
-  readonly [name: string]: unknown
 }
 
 export interface QueryExistedBinding {
@@ -75,7 +74,7 @@ export interface BindProofPayloadResponse<BCP47Code extends string> {
    * Language code follows BCP-47 standard (i.e. https://www.rfc-editor.org/info/bcp47).
    * Note: there is always a `default` content.
    */
-  readonly post_content: Record<BCP47Code, string>
+  readonly post_content: BCP47Code extends string ? Record<BCP47Code, string> : never
   /** Needed signing payload */
   readonly sign_payload: string
 }
