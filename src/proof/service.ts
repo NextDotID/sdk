@@ -5,7 +5,7 @@ export interface ProofServiceOptions extends BaseInfo {
   readonly client: ProofClient
 }
 
-export class ProofService<Keys extends string, Extra extends object = EthereumProofExtra> {
+export class ProofService<PostContentCode extends string, Extra extends object = EthereumProofExtra> {
   readonly client: ProofClient
   readonly platform: string
   readonly identity: string
@@ -23,7 +23,7 @@ export class ProofService<Keys extends string, Extra extends object = EthereumPr
   }
 
   bindProof(action: Action) {
-    return this.client.bindProof<Keys>({
+    return this.client.bindProof<PostContentCode>({
       platform: this.platform,
       identity: this.identity,
       public_key: this.public_key,
@@ -44,7 +44,7 @@ export class ProofService<Keys extends string, Extra extends object = EthereumPr
     })
   }
 
-  async createProof(options: SignatureOptions<Extra>): Promise<CreateProofVerification<Keys>> {
+  async createProof(options: SignatureOptions<Extra>): Promise<CreateProofVerification<PostContentCode>> {
     const proof = await this.bindProof('create')
     return {
       post_content: proof.post_content,

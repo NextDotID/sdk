@@ -64,7 +64,7 @@ export interface BindProofPayload extends QueryProofBound {
   readonly action: Action
 }
 
-export interface BindProofPayloadResponse<PostContent> {
+export interface BindProofPayloadResponse<BCP47Code extends string> {
   /** UUID of this chain link */
   readonly uuid: string
   /** Creation time of this chain link (UNIX timestamp, unit: second) */
@@ -75,7 +75,7 @@ export interface BindProofPayloadResponse<PostContent> {
    * Language code follows BCP-47 standard (i.e. https://www.rfc-editor.org/info/bcp47).
    * Note: there is always a `default` content.
    */
-  readonly post_content: PostContent
+  readonly post_content: Record<BCP47Code, string>
   /** Needed signing payload */
   readonly sign_payload: string
 }
