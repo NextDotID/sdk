@@ -53,12 +53,15 @@ export class KVClient {
     })
   }
 
-  protected async request<T>(pathname: string, init?: RequestInit & { searchParams?: object }) {
+  protected async request<T>(pathname: string, init?: RequestInitModified) {
     const url = new URL(pathname, this.baseURL)
-    Object.entries(init?.searchParams ?? {}).forEach(([key, value]) => {
-      if (value === undefined || value === null) return
-      url.searchParams.set(key, String(value))
-    })
+    const headers = new Headers(init?.headers ?? {})
+    headers.set('accept-type', 'application/json')
+    headers.set('content-type', 'application/json')
+    for (const [key, value] of Object.entries(init?.searchParams ?? {})) {
+      if (value === undefined) continue
+      url.searchParams.set(key, value)
+    }
     const response = await this.fetch(url.toString(), init)
     if (response.ok) return response.json() as Promise<T>
     interface ErrorResponse {
@@ -67,4 +70,8 @@ export class KVClient {
     const payload = (await response.json()) as ErrorResponse
     throw new KVError(payload.message, response.status)
   }
+}
+
+interface RequestInitModified extends RequestInit {
+  searchParams?: Record<string, string | undefined>
 }

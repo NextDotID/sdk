@@ -54,8 +54,8 @@ export class ProofClient {
    * Query a proof payload to signature and to post
    * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L62
    */
-  bindProof(options: BindProofPayload) {
-    return this.request<BindProofPayloadResponse>('v1/proof/payload', {
+  bindProof<PostContent = Record<string, string>>(options: BindProofPayload) {
+    return this.request<BindProofPayloadResponse<PostContent>>('v1/proof/payload', {
       method: 'POST',
       body: JSON.stringify(options),
     })
@@ -71,7 +71,7 @@ export class ProofClient {
       searchParams: {
         identity: options.identity.join(','),
         platform: options.platform,
-        page: options.page ?? 1,
+        page: String(options.page ?? 1),
       },
     })
   }
@@ -111,7 +111,7 @@ export class ProofClient {
       method: 'GET',
       searchParams: {
         public_key: options.public_key,
-        page: options.page ?? 1,
+        page: String(options.page ?? 1),
       },
     })
   }
@@ -127,15 +127,18 @@ export class ProofClient {
     }
   }
 
-  protected async request<T>(pathname: string, init?: RequestInit & { searchParams?: object }) {
+  protected async request<T>(
+    pathname: string,
+    init?: RequestInit & { searchParams?: Record<string, string | undefined> },
+  ) {
+    const url = new URL(pathname, this.baseURL)
     const headers = new Headers(init?.headers ?? {})
     headers.set('accept-type', 'application/json')
     headers.set('content-type', 'application/json')
-    const url = new URL(pathname, this.baseURL)
-    Object.entries(init?.searchParams ?? {}).forEach(([key, value]) => {
-      if (value === undefined || value === null) return
-      url.searchParams.set(key, String(value))
-    })
+    for (const [key, value] of Object.entries(init?.searchParams ?? {})) {
+      if (value === undefined) continue
+      url.searchParams.set(key, value)
+    }
     const response = await this.fetch(url.toString(), { ...init, headers })
     if (response.ok) return response.json() as Promise<T>
     interface ErrorResponse {

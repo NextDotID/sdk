@@ -1,5 +1,5 @@
 import { ProofClient } from './client'
-import { Action, BaseInfo, CreateProofModification, EthereumProofExtra, Proof } from './types'
+import { Action, BaseInfo, CreateProofModification, EthereumProofExtra } from './types'
 
 export interface ProofServiceOptions extends BaseInfo {
   readonly client: ProofClient
@@ -22,8 +22,8 @@ export class ProofService<Extra = EthereumProofExtra> {
     return this.client.health()
   }
 
-  bindProof(action: Action) {
-    return this.client.bindProof({
+  bindProof<PostContent = Record<string, string>>(action: Action) {
+    return this.client.bindProof<PostContent>({
       platform: this.platform,
       identity: this.identity,
       public_key: this.public_key,
@@ -44,8 +44,8 @@ export class ProofService<Extra = EthereumProofExtra> {
     })
   }
 
-  async createProof(options: SignatureOptions<Extra>): Promise<CreateProofVerification> {
-    const proof = await this.bindProof('create')
+  async createProof<PostContent>(options: SignatureOptions<Extra>): Promise<CreateProofVerification> {
+    const proof = await this.bindProof<PostContent>('create')
     return {
       post_content: proof.post_content,
       verify: async (proof_location?: string) => {

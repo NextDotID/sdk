@@ -32,7 +32,7 @@ export interface QueryPayloadResponse {
   readonly uuid: string
   /** Creation timestamp of this request */
   readonly created_at: number
-  /** String to sign to */
+  /** Needed signing payload */
   readonly sign_payload: string
 }
 
