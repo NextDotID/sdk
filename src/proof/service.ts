@@ -16,7 +16,7 @@ export interface PlatformMap {
 
 export interface CreateProofVerification<BCP47Code extends string> {
   post_content: BCP47Code extends string ? Record<BCP47Code, string> : never
-  verify(location: string): Promise<void>
+  verify(location: BCP47Code extends string ? string : never): Promise<void>
 }
 
 export interface EthereumProofExtraOptions {
