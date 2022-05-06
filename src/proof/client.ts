@@ -54,8 +54,8 @@ export class ProofClient {
    * Query a proof payload to signature and to post
    * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L62
    */
-  bindProof<PostContent = Record<string, string>>(options: BindProofPayload) {
-    return this.request<BindProofPayloadResponse<PostContent>>('v1/proof/payload', {
+  bindProof<Keys extends string>(options: BindProofPayload) {
+    return this.request<BindProofPayloadResponse<Record<Keys, string>>>('v1/proof/payload', {
       method: 'POST',
       body: JSON.stringify(options),
     })
