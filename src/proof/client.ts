@@ -33,8 +33,8 @@ export class ProofClient {
    * General info
    * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L37
    */
-  health() {
-    return this.request<HealthResposne>('healthz', {
+  health<Platform extends string>() {
+    return this.request<HealthResposne<Platform>>('healthz', {
       method: 'GET',
     })
   }

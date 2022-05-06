@@ -1,29 +1,47 @@
 import { ProofClient } from './client'
 import { Action, BaseInfo, CreateProofModification, EthereumProofExtra } from './types'
 
-export interface ProofServiceOptions extends BaseInfo {
+export interface ProofServiceOptions<Platform extends string> extends BaseInfo {
+  readonly platform: Platform
   readonly client: ProofClient
 }
 
-export class ProofService<PostContentCode extends string, Extra extends object = EthereumProofExtra> {
+export interface PlatformMap {
+  nextid: never
+  github: 'default'
+  keybase: 'default'
+  twitter: 'default' | 'en_US' | 'zh_CN'
+  ethereum: never
+}
+
+export interface CreateProofVerification<BCP47Code extends string> {
+  post_content: Record<BCP47Code, string>
+  verify(location: string): Promise<void>
+}
+
+export interface EthereumProofExtraOptions {
+  onExtra(payload: string): EthereumProofExtra | Promise<EthereumProofExtra>
+}
+
+export class ProofService<Platform extends keyof PlatformMap> {
   readonly client: ProofClient
   readonly platform: string
   readonly identity: string
   readonly public_key: string
 
-  constructor(options: ProofServiceOptions) {
+  constructor(options: ProofServiceOptions<Platform>) {
     this.client = options.client
     this.platform = options.platform
     this.identity = options.identity
     this.public_key = options.public_key
   }
 
-  health() {
-    return this.client.health()
+  health<Platform extends string = keyof PlatformMap>() {
+    return this.client.health<Platform>()
   }
 
   bindProof(action: Action) {
-    return this.client.bindProof<PostContentCode>({
+    return this.client.bindProof<PlatformMap[Platform]>({
       platform: this.platform,
       identity: this.identity,
       public_key: this.public_key,
@@ -31,7 +49,7 @@ export class ProofService<PostContentCode extends string, Extra extends object =
     })
   }
 
-  createProofModification(options: Omit<CreateProofModification<Extra>, 'platform' | 'identity' | 'public_key'>) {
+  createProofModification<Extra>(options: Omit<CreateProofModification<Extra>, keyof BaseInfo>) {
     return this.client.createProofModification({
       platform: this.platform,
       identity: this.identity,
@@ -44,7 +62,9 @@ export class ProofService<PostContentCode extends string, Extra extends object =
     })
   }
 
-  async createProof(options: SignatureOptions<Extra>): Promise<CreateProofVerification<PostContentCode>> {
+  async createProof(
+    options: Platform extends 'ethereum' ? EthereumProofExtraOptions : void,
+  ): Promise<CreateProofVerification<PlatformMap[Platform]>> {
     const proof = await this.bindProof('create')
     return {
       post_content: proof.post_content,
@@ -54,19 +74,19 @@ export class ProofService<PostContentCode extends string, Extra extends object =
           uuid: proof.uuid,
           created_at: proof.created_at,
           proof_location,
-          extra: await options.onSignature(proof.sign_payload),
+          extra: await options?.onExtra(proof.sign_payload),
         })
       },
     }
   }
 
-  async deleteProof(options: SignatureOptions<Extra>) {
+  async deleteProof(options: Platform extends 'ethereum' ? EthereumProofExtraOptions : void) {
     const proof = await this.bindProof('delete')
     return this.createProofModification({
       action: 'delete',
       uuid: proof.uuid,
       created_at: proof.created_at,
-      extra: await options.onSignature(proof.sign_payload),
+      extra: await options?.onExtra(proof.sign_payload),
     })
   }
 
@@ -102,15 +122,6 @@ export class ProofService<PostContentCode extends string, Extra extends object =
     return toArray(this.iterProofChain())
   }
   // #endregion
-}
-
-interface SignatureOptions<Extra> {
-  onSignature(payload: string): Extra | Promise<Extra>
-}
-
-interface CreateProofVerification<Keys extends string> {
-  post_content: Record<Keys, string>
-  verify(location: string): Promise<void>
 }
 
 async function toArray<T>(iterate: AsyncGenerator<T>): Promise<readonly T[]> {

@@ -15,11 +15,11 @@ export interface BaseInfo {
   readonly public_key: string
 }
 
-export interface HealthResposne {
+export interface HealthResposne<Platform extends string> {
   /** must be `proof server` */
   readonly hello: string
   /** All `platform`s supported by this server */
-  readonly platforms: readonly string[]
+  readonly platforms: readonly Platform[]
 }
 
 export interface CreateProofModification<Extra> extends BindProofPayload {
@@ -35,9 +35,9 @@ export interface CreateProofModification<Extra> extends BindProofPayload {
 
 export interface EthereumProofExtra {
   /** Signature signed by ETH wallet (w/ same sign payload), Base64Encoded */
-  readonly wallet_signature?: string
+  readonly wallet_signature: string
   /** Signature signed by Persona private key (w/ same sign payload), Base64Encoded */
-  readonly signature?: string
+  readonly signature: string
   readonly [name: string]: unknown
 }
 
