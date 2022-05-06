@@ -1,6 +1,20 @@
 /** Action (`create` / `delete`) */
 export type Action = 'create' | 'delete'
 
+export interface BaseInfo {
+  /** Target platform */
+  readonly platform: string
+  /** Identity in target platform to proof */
+  readonly identity: string
+  /**
+   * Public key of NextID Persona to connect to.
+   * Should be SECP256K1 curve (for now),
+   * 65-bytes or 33-bytes long (uncompressed / compressed) and
+   * stringified into hex form (`/^0x[0-9a-f]{65,130}$/`).
+   */
+  readonly public_key: string
+}
+
 export interface HealthResposne {
   /** must be `proof server` */
   readonly hello: string
@@ -8,7 +22,7 @@ export interface HealthResposne {
   readonly platforms: readonly string[]
 }
 
-export interface CreateProofPayload<Extra> extends BindProofPayload {
+export interface CreateProofModification<Extra> extends BindProofPayload {
   /** UUID of this chain link */
   readonly uuid: string
   /**  Creation time of this chain link (UNIX timestamp, unit: second) */
@@ -19,10 +33,10 @@ export interface CreateProofPayload<Extra> extends BindProofPayload {
   readonly extra?: Extra
 }
 
-export interface ProofExtra {
-  /** (needed for `platform: ethereum`) Signature signed by ETH wallet (w/ same sign payload), Base64Encoded */
+export interface EthereumProofExtra {
+  /** Signature signed by ETH wallet (w/ same sign payload), Base64Encoded */
   readonly wallet_signature?: string
-  /** (needed for `platform: ethereum`) Signature signed by Persona private key (w/ same sign payload), Base64Encoded */
+  /** Signature signed by Persona private key (w/ same sign payload), Base64Encoded */
   readonly signature?: string
   readonly [name: string]: unknown
 }
@@ -43,19 +57,7 @@ export interface QueryExistedBindingResponse {
   readonly ids: readonly ProofIdentity[]
 }
 
-export interface QueryProofBound {
-  /** Target platform */
-  readonly platform: string
-  /** Identity in target platform to proof */
-  readonly identity: string
-  /**
-   * Public key of NextID Persona to connect to.
-   * Should be SECP256K1 curve (for now),
-   * 65-bytes or 33-bytes long (uncompressed / compressed) and
-   * stringified into hex form (`/^0x[0-9a-f]{65,130}$/`).
-   */
-  readonly public_key: string
-}
+export type QueryProofBound = BaseInfo
 
 export interface BindProofPayload extends QueryProofBound {
   /** Action (`create` / `delete`) */
@@ -63,10 +65,19 @@ export interface BindProofPayload extends QueryProofBound {
 }
 
 export interface BindProofPayloadResponse {
-  readonly post_content: unknown
-  readonly sign_payload: string
+  /** UUID of this chain link */
   readonly uuid: string
+  /** Creation time of this chain link (UNIX timestamp, unit: second) */
   readonly created_at: string
+  /**
+   * Post (in different languages) to let user send / save to target platform.
+   * Placeholders should be replaced by frontend / client.
+   * Language code follows BCP-47 standard (i.e. https://www.rfc-editor.org/info/bcp47).
+   * Note: there is always a `default` content.
+   */
+  readonly post_content: unknown
+  /** Raw string to be sent to `personal_sign` */
+  readonly sign_payload: string
 }
 
 export interface ProofIdentity {
@@ -82,22 +93,18 @@ export interface QueryProofChain {
   readonly page?: number
 }
 
-export interface QueryProofChainResponse<Extra> {
+export interface QueryProofChainResponse {
   /** Pagination info */
   readonly pagination: Pagination
   /** Proof Chain, Will be empty array if not found */
-  readonly proof_chain: readonly ProofChain<Extra>[]
+  readonly proof_chain: readonly ProofChain[]
 }
 
-export interface ProofChain<Extra = unknown> {
+export interface ProofChain<Extra = unknown> extends Omit<BaseInfo, 'public_key'> {
   /** UUID of this chain link */
   readonly uuid: string
   /** Action (`create` / `delete`) */
   readonly action: Action
-  /** Target platform */
-  readonly platform: string
-  /** Identity on that platform */
-  readonly identity: string
   /** Location where public-accessable proof post is set */
   readonly proof_location: string
   /** Creation time of this proof. (timestamp, unit: second) */
@@ -110,6 +117,17 @@ export interface ProofChain<Extra = unknown> {
   readonly extra?: Extra
 }
 
+export interface Proof extends Omit<BaseInfo, 'public_key'> {
+  /** Creation time of this proof. (timestamp, unit: second) */
+  readonly created_at: string
+  /** When last validation happened. (timestamp, unit: second) */
+  readonly last_checked_at: string
+  /** This record is valid or not according to last validation */
+  readonly is_valid: boolean
+  /** If not valid, reason will appears here */
+  readonly invalid_reason: string
+}
+
 /** Pagination info */
 export interface Pagination {
   /** Total amount of results */
@@ -120,19 +138,4 @@ export interface Pagination {
   readonly current: number
   /** Next page. `0` if current page is the last one. */
   readonly next: number
-}
-
-export interface Proof {
-  /** Platform */
-  readonly platform: string
-  /** Identity on that platform */
-  readonly identity: string
-  /** Creation time of this proof. (timestamp, unit: second) */
-  readonly created_at: string
-  /** When last validation happened. (timestamp, unit: second) */
-  readonly last_checked_at: string
-  /** This record is valid or not according to last validation */
-  readonly is_valid: boolean
-  /** If not valid, reason will appears here */
-  readonly invalid_reason: string
 }

@@ -5,6 +5,14 @@ export class KVClient {
   private readonly baseURL: URL
   private readonly fetch: typeof fetch
 
+  static production(fetcher = fetch) {
+    return new KVClient('https://kv-service.next.id', fetcher)
+  }
+
+  static development(fetcher = fetch) {
+    return new KVClient('https://kv-service.nextnext.id', fetcher)
+  }
+
   constructor(baseURL: string | URL, fetcher: typeof fetch) {
     this.baseURL = new URL(baseURL)
     this.fetch = fetcher

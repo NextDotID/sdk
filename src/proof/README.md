@@ -1,6 +1,6 @@
 # Proof Client
 
-The Proof Client is low-level API
+The is Proof Client low-level API
 
 ## Links
 

@@ -2,7 +2,7 @@ import { ProofError } from './errors'
 import type {
   BindProofPayload,
   BindProofPayloadResponse,
-  CreateProofPayload,
+  CreateProofModification,
   HealthResposne,
   Proof,
   QueryExistedBinding,
@@ -15,6 +15,14 @@ import type {
 export class ProofClient {
   private readonly baseURL: URL
   private readonly fetch: typeof fetch
+
+  static production(fetcher = fetch) {
+    return new ProofClient('https://proof-service.next.id', fetcher)
+  }
+
+  static development(fetcher = fetch) {
+    return new ProofClient('https://proof-service.nextnext.id', fetcher)
+  }
 
   constructor(baseURL: string | URL, fetcher: typeof fetch) {
     this.baseURL = new URL(baseURL)
@@ -35,7 +43,7 @@ export class ProofClient {
    * Create a proof modification
    * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L106
    */
-  createPersonaPayload<Extra>(options: CreateProofPayload<Extra>) {
+  createProofModification<Extra>(options: CreateProofModification<Extra>) {
     return this.request<void>('v1/proof', {
       method: 'POST',
       body: JSON.stringify(options),
@@ -103,8 +111,8 @@ export class ProofClient {
    * Get the proof chain items
    * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L270
    */
-  queryProofChain<Extra>(options: QueryProofChain) {
-    return this.request<QueryProofChainResponse<Extra>>('v1/proofchain', {
+  queryProofChain(options: QueryProofChain) {
+    return this.request<QueryProofChainResponse>('v1/proofchain', {
       method: 'GET',
       searchParams: {
         public_key: options.public_key,

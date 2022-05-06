@@ -1,6 +1,6 @@
 # Key-Value Client
 
-The Key-Value Client is low-level API
+The is Key-Value Client low-level API
 
 ## Links
 
