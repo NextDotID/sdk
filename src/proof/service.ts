@@ -25,6 +25,14 @@ export class ProofService<Platform extends keyof PlatformMap> {
     return this.client.health<Platform>()
   }
 
+  getProof() {
+    return this.client.getProof({
+      platform: this.platform,
+      identity: this.identity,
+      public_key: this.publicKey,
+    })
+  }
+
   bindProof(action: Action) {
     return this.client.bindProof<PlatformMap[Platform]>({
       platform: this.platform,
@@ -34,9 +42,9 @@ export class ProofService<Platform extends keyof PlatformMap> {
     })
   }
 
-  createProofModification(options: CreateProofModificationType<Platform>) {
+  createProofModification(action: Action, options: CreateProofModificationType<Platform>) {
     return this.client.createProofModification({
-      action: options.action,
+      action,
       uuid: options.uuid,
       created_at: options.created_at,
       platform: this.platform,
@@ -54,9 +62,9 @@ export class ProofService<Platform extends keyof PlatformMap> {
       identity: this.identity,
       public_key: this.publicKey,
     })
-    const verification: CreateProofVerification<PlatformMap[Platform]> = {
+    const verification: CreateProofVerification<Platform> = {
       post_content: proof.post_content,
-      verify: async (proof_location?: string) => {
+      verify: async (proof_location: string | void) => {
         return this.client.createProofModification({
           action: 'create',
           uuid: proof.uuid,
@@ -88,14 +96,6 @@ export class ProofService<Platform extends keyof PlatformMap> {
       public_key: this.publicKey,
       proof_location: undefined as never,
       extra: await options?.onExtra(proof.sign_payload),
-    })
-  }
-
-  queryBound() {
-    return this.client.queryBound({
-      platform: this.platform,
-      identity: this.identity,
-      public_key: this.publicKey,
     })
   }
 

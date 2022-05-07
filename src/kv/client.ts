@@ -1,3 +1,4 @@
+import { buildHeaders, buildURL } from '../utils'
 import { KVError } from './errors'
 import type { GetResposne, QueryPayload, QueryPayloadResponse, SetOptions } from './types'
 
@@ -24,7 +25,7 @@ export class KVClient {
    * @link https://github.com/nextdotid/kv_server/blob/cb109b/docs/api.apib#L27
    */
   get(persona: string): Promise<GetResposne> {
-    if (!persona.startsWith('0x')) return Promise.reject(new KVError('started with `0x`'))
+    if (!persona.startsWith('0x')) return Promise.reject(new KVError('started with `0x`', 400))
     return this.request('v1/kv', {
       method: 'GET',
       searchParams: { persona },
@@ -54,21 +55,12 @@ export class KVClient {
   }
 
   protected async request<T>(pathname: string, init?: RequestInitModified) {
-    const url = new URL(pathname, this.baseURL)
-    const headers = new Headers(init?.headers ?? {})
-    headers.set('accept-type', 'application/json')
-    headers.set('content-type', 'application/json')
-    for (const [key, value] of Object.entries(init?.searchParams ?? {})) {
-      if (value === undefined) continue
-      url.searchParams.set(key, value)
-    }
-    const response = await this.fetch(url.toString(), init)
-    if (response.ok) return response.json() as Promise<T>
-    interface ErrorResponse {
-      message: string
-    }
-    const payload = (await response.json()) as ErrorResponse
-    throw new KVError(payload.message, response.status)
+    const response = await this.fetch(buildURL(pathname, this.baseURL, init?.searchParams), {
+      ...init,
+      headers: buildHeaders(init?.headers),
+    })
+    if (!response.ok) throw KVError.from(response)
+    return response.json() as Promise<T>
   }
 }
 

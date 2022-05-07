@@ -67,7 +67,7 @@ export interface BindProofPayloadResponse<BCP47Code extends string> {
    * Language code follows BCP-47 standard (i.e. https://www.rfc-editor.org/info/bcp47).
    * Note: there is always a `default` content.
    */
-  readonly post_content: BCP47Code extends string ? Readonly<Record<BCP47Code, string>> : never
+  readonly post_content: BCP47Code extends never ? never : Readonly<Record<BCP47Code, string>>
   /** Needed signing payload */
   readonly sign_payload: string
 }

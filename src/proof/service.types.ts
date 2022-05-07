@@ -1,11 +1,6 @@
 import { ProofClient } from './client'
 import { BaseInfo, CreateProofModification } from './types'
 
-export interface ProofServiceOptions<Platform extends string> extends BaseInfo {
-  readonly platform: Platform
-  readonly client: ProofClient
-}
-
 export interface PlatformMap {
   nextid: never
   github: 'default'
@@ -14,9 +9,14 @@ export interface PlatformMap {
   ethereum: never
 }
 
-export interface CreateProofVerification<BCP47Code extends string> {
-  readonly post_content: BCP47Code extends string ? Readonly<Record<BCP47Code, string>> : never
-  verify(location: BCP47Code extends string ? string : never): Promise<void>
+export interface ProofServiceOptions<Platform extends keyof PlatformMap> extends BaseInfo {
+  readonly platform: Platform
+  readonly client: ProofClient
+}
+
+export interface CreateProofVerification<Platform extends keyof PlatformMap> {
+  readonly post_content: PlatformMap[Platform] extends never ? never : Readonly<Record<PlatformMap[Platform], string>>
+  verify(location: PlatformMap[Platform] extends never ? void : string): Promise<void>
 }
 
 export interface ExtraOptions<T> {
@@ -29,11 +29,11 @@ export type ProofExtra<Platform extends keyof PlatformMap> = Platform extends 'e
 
 export type CreateProofModificationType<Platform extends keyof PlatformMap> = Omit<
   CreateProofModification<ProofLocation<Platform>, ProofExtra<Platform>>,
-  keyof BaseInfo
+  keyof BaseInfo | 'action'
 >
 
 export type ExtraSpecificOptions<Platform extends keyof PlatformMap> = ProofExtra<Platform> extends never
-  ? never
+  ? void
   : ExtraOptions<ProofExtra<Platform>>
 
 export interface EthereumProofExtra {

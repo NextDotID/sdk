@@ -1,3 +1,4 @@
+import { buildHeaders, buildURL } from '../utils'
 import { ProofError } from './errors'
 import type {
   BindProofPayload,
@@ -40,28 +41,6 @@ export class ProofClient {
   }
 
   /**
-   * Create a proof modification
-   * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L106
-   */
-  createProofModification<Location, Extra>(options: CreateProofModification<Location, Extra>) {
-    return this.request<void>('v1/proof', {
-      method: 'POST',
-      body: JSON.stringify(options),
-    })
-  }
-
-  /**
-   * Query a proof payload to signature and to post
-   * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L62
-   */
-  bindProof<BCP47Code extends string>(options: BindProofPayload) {
-    return this.request<BindProofPayloadResponse<BCP47Code>>('v1/proof/payload', {
-      method: 'POST',
-      body: JSON.stringify(options),
-    })
-  }
-
-  /**
    * Query an existed binding
    * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L154
    */
@@ -76,6 +55,43 @@ export class ProofClient {
     })
   }
 
+  /**
+   * Create a proof modification
+   * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L106
+   */
+  createProofModification<Location, Extra>(options: CreateProofModification<Location, Extra>) {
+    return this.request<void>('v1/proof', {
+      method: 'POST',
+      body: JSON.stringify(options),
+    })
+  }
+
+  /**
+   * Check if a proof exists
+   * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L228
+   */
+  getProof(options: QueryProofBound): Promise<Proof> {
+    return this.request<Proof>('v1/proof/exists', {
+      method: 'GET',
+      searchParams: {
+        identity: options.identity,
+        platform: options.platform,
+        public_key: options.public_key,
+      },
+    })
+  }
+
+  /**
+   * Query a proof payload to signature and to post
+   * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L62
+   */
+  bindProof<BCP47Code extends string>(options: BindProofPayload) {
+    return this.request<BindProofPayloadResponse<BCP47Code>>('v1/proof/payload', {
+      method: 'POST',
+      body: JSON.stringify(options),
+    })
+  }
+
   /** Iterator Existed Binding */
   async *iterExistedBinding(options: Omit<QueryExistedBinding, 'page'>) {
     let page = 1
@@ -85,21 +101,6 @@ export class ProofClient {
       if (pagination.next === 0) break
       page = pagination.next
     }
-  }
-
-  /**
-   * Check if a proof exists
-   * @link https://github.com/nextdotid/proof-server/blob/32bb5b/docs/api.apib#L228
-   */
-  async queryBound(options: QueryProofBound): Promise<Proof> {
-    return this.request<Proof>('v1/proof/exists', {
-      method: 'GET',
-      searchParams: {
-        identity: options.identity,
-        platform: options.platform,
-        public_key: options.public_key,
-      },
-    })
   }
 
   /**
@@ -131,20 +132,11 @@ export class ProofClient {
     pathname: string,
     init?: RequestInit & { searchParams?: Record<string, string | undefined> },
   ) {
-    const url = new URL(pathname, this.baseURL)
-    const headers = new Headers(init?.headers ?? {})
-    headers.set('accept-type', 'application/json')
-    headers.set('content-type', 'application/json')
-    for (const [key, value] of Object.entries(init?.searchParams ?? {})) {
-      if (value === undefined) continue
-      url.searchParams.set(key, value)
-    }
-    const response = await this.fetch(url.toString(), { ...init, headers })
-    if (response.ok) return response.json() as Promise<T>
-    interface ErrorResponse {
-      message: string
-    }
-    const payload = (await response.json()) as ErrorResponse
-    throw new ProofError(payload.message, response.status)
+    const response = await this.fetch(buildURL(pathname, this.baseURL, init?.searchParams), {
+      ...init,
+      headers: buildHeaders(init?.headers),
+    })
+    if (!response.ok) throw ProofError.from(response)
+    return response.json() as Promise<T>
   }
 }
