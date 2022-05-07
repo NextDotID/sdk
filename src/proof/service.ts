@@ -1,12 +1,13 @@
 import { ProofClient } from './client'
 import type {
-  CreateProofModificationType,
   CreateProofVerification,
   ExtraSpecificOptions,
   PlatformMap,
+  ProofExtra,
+  ProofLocation,
   ProofServiceOptions,
 } from './service.types'
-import type { Action } from './types'
+import type { Action, BaseInfo, CreateProofModification } from './types'
 
 export class ProofService<Platform extends keyof PlatformMap> {
   readonly client: ProofClient
@@ -42,7 +43,10 @@ export class ProofService<Platform extends keyof PlatformMap> {
     })
   }
 
-  createProofModification(action: Action, options: CreateProofModificationType<Platform>) {
+  createProofModification(
+    action: Action,
+    options: Omit<CreateProofModification<ProofLocation<Platform>, ProofExtra<Platform>>, keyof BaseInfo | 'action'>,
+  ) {
     return this.client.createProofModification({
       action,
       uuid: options.uuid,
