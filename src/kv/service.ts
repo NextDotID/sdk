@@ -1,17 +1,19 @@
+import { PlatformMap } from '../proof'
 import { KVClient } from './client'
 import { BaseInfo } from './types'
 
-export interface KVServiceOptions extends BaseInfo {
+export interface KVServiceOptions<Platform extends string> extends BaseInfo {
+  readonly platform: Platform
   readonly client: KVClient
 }
 
-export class KVService {
+export class KVService<Platform extends string = keyof PlatformMap> {
   public readonly client: KVClient
   public readonly persona: string
-  public readonly platform: string
+  public readonly platform: Platform
   public readonly identity: string
 
-  constructor(options: KVServiceOptions) {
+  constructor(options: KVServiceOptions<Platform>) {
     this.client = options.client
     this.persona = options.persona
     this.platform = options.platform

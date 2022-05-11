@@ -8,5 +8,10 @@
     "outDir": "esm",
     "declaration": true
   },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  },
   "include": ["src"]
 }

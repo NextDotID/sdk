@@ -1,3 +1,13 @@
+export type RFC6902 = RFC6902Operation[]
+
+export type RFC6902Operation =
+  | { op: 'add'; path: string; value: unknown }
+  | { op: 'remove'; path: string }
+  | { op: 'replace'; path: string; value: unknown }
+  | { op: 'copy'; from: string; path: string }
+  | { op: 'move'; from: string; path: string }
+  | { op: 'test'; path: string; value: unknown }
+
 export interface BaseInfo {
   /** Persona public key (uncomressed hexstring started with `0x`) */
   readonly persona: string
