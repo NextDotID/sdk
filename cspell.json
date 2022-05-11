@@ -1,0 +1,6 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "ignorePaths": ["esm", "cjs"],
+  "ignoreWords": ["dimensiondev", "endregion", "healthz", "keybase", "nextdotid", "npmrc", "proofchain", "SECP"],
+  "words": ["Resposne"]
+}

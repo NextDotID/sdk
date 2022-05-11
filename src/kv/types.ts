@@ -9,7 +9,7 @@ export type RFC6902Operation =
   | { op: 'test'; path: string; value: unknown }
 
 export interface BaseInfo {
-  /** Persona public key (uncomressed hexstring started with `0x`) */
+  /** Persona public key (uncompressed hex-string started with `0x`) */
   readonly persona: string
   /** Platform */
   readonly platform: string

@@ -27,7 +27,7 @@ export interface CreateProofModification<Location, Extra> extends BindProofPaylo
   readonly uuid: string
   /**  Creation time of this chain link (UNIX timestamp, unit: second) */
   readonly created_at: string
-  /** Location where public-accessable proof post is set */
+  /** Location where public-accessible proof post is set */
   readonly proof_location: Location
   /** Extra info for specific platform needed */
   readonly extra: Extra
@@ -97,7 +97,7 @@ export interface ProofChain<Extra = unknown> extends Omit<BaseInfo, 'public_key'
   readonly uuid: string
   /** Action (`create` / `delete`) */
   readonly action: Action
-  /** Location where public-accessable proof post is set */
+  /** Location where public-accessible proof post is set */
   readonly proof_location: string
   /** Creation time of this proof. (timestamp, unit: second) */
   readonly created_at: string

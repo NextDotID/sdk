@@ -21,7 +21,7 @@ export class KVClient {
 
   /**
    * Get current KV of a persona
-   * @param persona Persona pubilc key (hexstring started with `0x`)
+   * @param persona Persona public key (hex-string started with `0x`)
    * @link https://github.com/nextdotid/kv_server/blob/cb109b/docs/api.apib#L27
    */
   get(persona: string): Promise<GetResposne> {
