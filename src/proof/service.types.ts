@@ -6,6 +6,7 @@ export interface PlatformMap {
   github: 'default'
   keybase: 'default'
   twitter: 'default' | 'en_US' | 'zh_CN'
+  discord: 'default' | 'en-US' | 'zh-CN'
   ethereum: never
 }
 
