@@ -1,6 +1,6 @@
 import { buildHeaders, buildURL } from '../utils'
 import { KVError } from './errors'
-import type { GetResposne, QueryPayload, QueryPayloadResponse, SetOptions } from './types'
+import type { GetResposne, HealthResposne, QueryPayload, QueryPayloadResponse, SetOptions } from './types'
 
 export class KVClient {
   private readonly baseURL: URL
@@ -17,6 +17,15 @@ export class KVClient {
   constructor(baseURL: string | URL, fetcher: typeof fetch) {
     this.baseURL = new URL(baseURL)
     this.fetch = fetcher
+  }
+
+  /**
+   * General info
+   */
+  health() {
+    return this.request<HealthResposne>('healthz', {
+      method: 'GET',
+    })
   }
 
   /**

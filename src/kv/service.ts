@@ -20,6 +20,10 @@ export class KVService<Platform extends string = keyof PlatformMap> {
     this.identity = options.identity
   }
 
+  health() {
+    return this.client.health()
+  }
+
   get() {
     return this.client.get(this.persona)
   }

@@ -17,6 +17,10 @@ export interface BaseInfo {
   readonly identity: string
 }
 
+export interface HealthResposne {
+  hello: string
+}
+
 export interface GetResposne {
   readonly persona: BaseInfo['persona']
   /** All proofs belong to this persona */
