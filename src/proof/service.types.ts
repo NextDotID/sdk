@@ -35,6 +35,6 @@ export type ExtraSpecificOptions<Platform extends keyof PlatformMap> = ProofExtr
 export interface EthereumProofExtra {
   /** Signature signed by ETH wallet (w/ same sign payload), Base64Encoded */
   readonly wallet_signature: string
-  /** Signature signed by Persona private key (w/ same sign payload), Base64Encoded */
+  /** Signature signed by Avatar private key (w/ same sign payload), Base64Encoded */
   readonly signature: string
 }

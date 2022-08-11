@@ -7,7 +7,7 @@ export interface BaseInfo {
   /** Identity in target platform to proof */
   readonly identity: string
   /**
-   * Public key of NextID Persona to connect to.
+   * Public key of NextID Avatar to connect to.
    * Should be SECP256K1 curve (for now),
    * 65-bytes or 33-bytes long (uncompressed / compressed) and
    * stringified into hex form (`/^0x[0-9a-f]{65,130}$/`).
@@ -73,9 +73,9 @@ export interface BindProofPayloadResponse<BCP47Code extends string> {
 }
 
 export interface ProofIdentity {
-  /** Persona public key */
-  readonly persona: string
-  /** All proofs under this persona */
+  /** Avtar public key */
+  readonly avatar: string
+  /** All proofs under this avatar */
   readonly proofs: readonly Proof[]
 }
 
@@ -101,7 +101,7 @@ export interface ProofChain<Extra = unknown> extends Omit<BaseInfo, 'public_key'
   readonly proof_location: string
   /** Creation time of this proof. (timestamp, unit: second) */
   readonly created_at: string
-  /** Generate `signature_payload` and `persona_private_key` */
+  /** Generate `signature_payload` and `avatar_private_key` */
   readonly signature: string
   /** Raw string to be sent to `personal_sign` */
   readonly signature_payload: string
