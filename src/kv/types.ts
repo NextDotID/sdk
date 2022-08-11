@@ -9,8 +9,8 @@ export type RFC6902Operation =
   | { op: 'test'; path: string; value: unknown }
 
 export interface BaseInfo {
-  /** Persona public key (uncompressed hex-string started with `0x`) */
-  readonly persona: string
+  /** Avatar public key (uncompressed hex-string started with `0x`) */
+  readonly avatar: string
   /** Platform */
   readonly platform: string
   /** Identity */
@@ -22,8 +22,8 @@ export interface HealthResposne {
 }
 
 export interface GetResposne {
-  readonly persona: BaseInfo['persona']
-  /** All proofs belong to this persona */
+  readonly avatar: BaseInfo['avatar']
+  /** All proofs belong to this avatar */
   readonly proofs: readonly Proof[]
 }
 

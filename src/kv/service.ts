@@ -9,13 +9,13 @@ export interface KVServiceOptions<Platform extends string> extends BaseInfo {
 
 export class KVService<Platform extends string = keyof PlatformMap> {
   public readonly client: KVClient
-  public readonly persona: string
+  public readonly avatar: string
   public readonly platform: Platform
   public readonly identity: string
 
   constructor(options: KVServiceOptions<Platform>) {
     this.client = options.client
-    this.persona = options.persona
+    this.avatar = options.avatar
     this.platform = options.platform
     this.identity = options.identity
   }
@@ -25,18 +25,18 @@ export class KVService<Platform extends string = keyof PlatformMap> {
   }
 
   get() {
-    return this.client.get(this.persona)
+    return this.client.get(this.avatar)
   }
 
   async set<Patch>(patch: Patch, options: SignatureOptions) {
     const payload = await this.client.getPayload<Patch>({
-      persona: this.persona,
+      avatar: this.avatar,
       platform: this.platform,
       identity: this.identity,
       patch,
     })
     return this.client.set<Patch>({
-      persona: this.persona,
+      avatar: this.avatar,
       platform: this.platform,
       identity: this.identity,
       uuid: payload.uuid,

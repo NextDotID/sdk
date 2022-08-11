@@ -29,15 +29,15 @@ export class KVClient {
   }
 
   /**
-   * Get current KV of a persona
-   * @param persona Persona public key (hex-string started with `0x`)
+   * Get current KV of an avatar
+   * @param avatar Avatar public key (hex-string started with `0x`)
    * @link https://github.com/nextdotid/kv_server/blob/cb109b/docs/api.apib#L27
    */
-  get(persona: string): Promise<GetResposne> {
-    if (!persona.startsWith('0x')) return Promise.reject(new KVError('started with `0x`', 400))
+  get(avatar: string): Promise<GetResposne> {
+    if (!avatar.startsWith('0x')) return Promise.reject(new KVError('started with `0x`', 400))
     return this.request('v1/kv', {
       method: 'GET',
-      searchParams: { persona },
+      searchParams: { avatar },
     })
   }
 
