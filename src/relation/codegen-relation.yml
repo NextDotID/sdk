@@ -1,0 +1,9 @@
+overwrite: true
+schema: 'https://relation-service.nextnext.id/'
+documents: 'src/relation/graphql/**/*.graphql'
+generates:
+  src/relation/graphql.ts:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-graphql-request'

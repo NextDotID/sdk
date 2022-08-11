@@ -16,10 +16,17 @@
     "prepublishOnly": "rimraf esm cjs && tsc && tsc -p tsconfig.cjs.json",
     "set-version": "npm --no-git-tag-version version \"$npm_package_version-$BUILD_VERSION\"",
     "spellcheck": "cspell \"**\"",
-    "test": "mocha"
+    "test": "mocha",
+    "codegen:relation": "graphql-codegen --config src/relation/codegen-relation.yml"
   },
   "devDependencies": {
     "@dimensiondev/eslint-plugin": "^0.0.2-20220501020553-ec7e75d",
+    "@graphql-codegen/cli": "2.11.6",
+    "@graphql-codegen/introspection": "2.2.1",
+    "@graphql-codegen/typescript": "^2.7.3",
+    "@graphql-codegen/typescript-graphql-request": "^4.5.3",
+    "@graphql-codegen/typescript-operations": "^2.5.3",
+    "@graphql-codegen/typescript-resolvers": "2.7.3",
     "@types/chai": "^4.3.1",
     "@types/chai-as-promised": "^7.1.5",
     "@types/mocha": "^9.1.1",
@@ -33,5 +40,8 @@
     "rimraf": "^3.0.2",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.4"
+  },
+  "dependencies": {
+    "graphql": "^16.5.0"
   }
 }

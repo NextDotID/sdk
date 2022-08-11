@@ -1,0 +1,23 @@
+query getTwitterUserNeighbors($id: String!) {
+  identity(platform: "twitter", identity: $id) {
+    addedAt
+    neighborWithTraversal(depth: 2) {
+      fetcher
+      source
+      createdAt
+      uuid
+      from {
+        uuid
+        identity
+        platform
+        displayName
+      }
+      to {
+        uuid
+        platform
+        identity
+        displayName
+      }
+    }
+  }
+}
