@@ -1,6 +1,6 @@
 {
   "name": "@nextdotid/sdk",
-  "version": "0.0.0",
+  "version": "1.0.0-rc1",
   "description": "Next.ID JavaScript SDK",
   "license": "MIT",
   "author": "NextDotID",
