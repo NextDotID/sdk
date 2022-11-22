@@ -4,7 +4,7 @@ export class KVError extends Error {
 
   static async from(response: Response) {
     const payload = (await response.json()) as { message: string }
-    throw new KVError(payload.message, response.status)
+    return new KVError(payload.message, response.status)
   }
 
   constructor(message: string, statusCode: number) {
