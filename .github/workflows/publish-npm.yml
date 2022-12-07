@@ -1,0 +1,30 @@
+name: Publish NPM
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    if: github.repository_owner == 'nextdotid'
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run set-version
+      - uses: jossef/action-set-json-field@v2
+        with:
+          file: package.json
+          field: name
+          value: ${{ secrets.NPM_PACKAGE_NAME }}
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          access: public
