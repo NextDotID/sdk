@@ -40,6 +40,8 @@ export interface QueryExistedBinding {
   readonly identity: readonly string[]
   /** Pagination. First page is number `1` */
   readonly page?: number
+  /** Exact Match. Match identity exactly or not. Defaults to false. **/
+  readonly exact?: boolean
 }
 
 export interface QueryExistedBindingResponse {
