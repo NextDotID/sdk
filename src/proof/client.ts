@@ -51,6 +51,7 @@ export class ProofClient {
         identity: options.identity.join(','),
         platform: options.platform,
         page: String(options.page ?? 1),
+        exact: String(options.exact ?? false),
       },
     })
   }
